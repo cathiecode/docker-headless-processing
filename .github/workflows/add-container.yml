@@ -19,6 +19,7 @@ jobs:
       - name: Build
         run: docker build -t ghcr.io/${OWNER,,}/headless-processing:${VERSION} .
         env:
+          OWNER: ${{ github.repository_owner }}
           VERSION: ${{ github.event.inputs.tag }}
       - name: Login
         run: echo $CR_PAT | docker login ghcr.io -u ${OWNER,,} --password-stdin

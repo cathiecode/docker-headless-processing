@@ -1,4 +1,4 @@
-# Headless Processing environment for Processing
+# Headless Processing environment for Docker
 ## Usage
 ### Option A. clone, rewrite and run
 ```

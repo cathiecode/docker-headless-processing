@@ -11,9 +11,6 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     timeout-minutes: 5
-    strategy:
-      matrix:
-        version: [ 5.5.0, 5.4.0 ]
     defaults:
       run:
         working-directory: .
@@ -23,6 +20,8 @@ jobs:
         with:
           patterns: |
             .
+      - name: Fetch Processing
+        run: curl -L https://github.com/processing/processing4/releases/download/processing-1283-4.0b8/processing-4.0b8-linux-x64.tgz --output processing.tar.gz
       - name: Build
         run: docker build -t ghcr.io/${OWNER,,}/headless-processing:${VERSION} .
         env:

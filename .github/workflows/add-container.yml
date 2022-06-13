@@ -1,0 +1,32 @@
+name: Add container when released
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag for Release
+        required: true
+
+jobs:
+  Release:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.tag }}
+      - name: Download Processing binary
+        run: curl -L https://github.com/processing/processing4/releases/download/processing-1283-4.0b8/processing-4.0b8-linux-x64.tgz --output processing.tar.gz
+      - name: Build
+        run: docker build -t ghcr.io/${OWNER,,}/headless-processing:${VERSION} .
+        env:
+          VERSION: ${{ github.event.inputs.tag }}
+      - name: Login
+        run: echo $CR_PAT | docker login ghcr.io -u ${OWNER,,} --password-stdin
+        env:
+          CR_PAT: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+      - name: Push
+        run: docker push ghcr.io/${OWNER,,}/headless-processing:${VERSION}
+        env:
+          OWNER: ${{ github.repository_owner }}
+          VERSION: ${{ github.event.inputs.tag }}
